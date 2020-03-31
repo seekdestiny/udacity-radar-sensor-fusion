@@ -118,7 +118,12 @@ noise_level = zeros(Nr/2-2*(Tcd+Gcd),Nd-2*(Tcr+Gcr));
 
 gridSize = (2*Tcr+2*Gcr+1)*(2*Tcd+2*Gcd+1);
 trainingCellsNum = gridSize-(2*Gcr+1)*(2*Gcd+1);
+```
 
+Initialize the signal map to the same size of range doppler map with all zeros.
+Later we will only assign signal value within thresholded block. By this way,
+we equate all the non-thresholded cells to 0.
+```
 CFAR_sig = zeros(size(RDM));   %
 ```
 
@@ -148,6 +153,7 @@ threshold = pow2db(sum_train/Tcell)*offset;
 
 Next, compare the signal under CUT against this threshold.
 If the CUT level > threshold assign it a value of 1, else equate it to 0.
+And we only assign value within thresholded block and leave all blocks near edges to 0.
 
 ```Matlab
 if RDM(i+(Tcd+Gcd),j+(Tcd+Gcr))>sigThresh
